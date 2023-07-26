@@ -1,0 +1,8 @@
+Horizontal: z (positive: 0 -> nCol)
+Vertical: x (positive: 0-> nRow)
+
+Player's rotation (0, 0, 0) => player looks at positive way in z
+
+First line: Size of grid
+Second line: Start position
+Third line: Finish Box
