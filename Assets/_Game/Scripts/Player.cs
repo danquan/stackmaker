@@ -82,11 +82,12 @@ public class Player : MonoBehaviour
             {
                 if(endSwipe.x > startSwipe.x)
                 {
-                    TurnRight();
+                    // Go North
+                    SetDirection((int)Direction.NORTH);
                 }
                 else
                 {
-                    TurnLeft();
+                    SetDirection((int)Direction.SOUTH);
                 }
             }
             // Vertical
@@ -95,11 +96,12 @@ public class Player : MonoBehaviour
                 // Don't do anything, just keep current directioin
                 if(endSwipe.y > startSwipe.y)
                 {
-                    
+                    SetDirection((int)Direction.WEST);
                 }
                 else
                 {
-                    TurnBack();
+
+                    SetDirection((int)Direction.EAST);
                 }
             }
 
@@ -134,6 +136,11 @@ public class Player : MonoBehaviour
         playerDirection = (playerDirection + 2) % 4;
         ForceTurn();
     }
+    private void SetDirection(int direction)
+    {
+        playerDirection = direction;
+        //ForceTurn();
+    }
     // Rotate GameObject
     // By definition, we just care about position of y
     private void ForceTurn()
@@ -153,7 +160,8 @@ public class Player : MonoBehaviour
     {
         listBrick.Add(Instantiate(brickPrefab, 
                                   new Vector3(0, listBrick.Count * brickHeight ,0) + transform.position, 
-                                  Quaternion.Euler(new Vector3(-90, playerDirection * 90, 180)), 
+                                  /*Quaternion.Euler(new Vector3(-90, playerDirection * 90, 180))*/
+                                  brickPrefab.transform.rotation, 
                                   transform));
         body.transform.position = (new Vector3(0, (listBrick.Count - 1) * brickHeight, 0)) + transform.position;
     }

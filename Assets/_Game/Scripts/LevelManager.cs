@@ -50,7 +50,7 @@ public class LevelManager : MonoBehaviour
             velocity.y = targetMapPos.y > playerMapPosition.y ? 1 : (targetMapPos.y < playerMapPosition.y ? -1 : 0);
 
             // Change playerMapPos
-            if(OnMapDistance(player.transform.position, level.GetPos(playerMapPosition.x + velocity.x, playerMapPosition.y + velocity.y)) < 0.1f)
+            if(OnMapDistance(player.transform.position, level.GetPos(playerMapPosition.x + velocity.x, playerMapPosition.y + velocity.y)) < 0.5f)
             {
                 playerMapPosition.x += velocity.x;
                 playerMapPosition.y += velocity.y;
@@ -77,16 +77,22 @@ public class LevelManager : MonoBehaviour
                     player.RemoveBrick();
                 }
 
-                if(playerMapPosition.x == targetMapPos.x &&
+                /*if(playerMapPosition.x == targetMapPos.x &&
                    playerMapPosition.y == targetMapPos.y )
                 {
                     player.SetMove(false);
-                }
+                }*/
             }
             
             // Move in Plane
             Vector3 targetPos = level.GetPos(targetMapPos.x, targetMapPos.y);
-            player.transform.position = Vector3.MoveTowards(player.transform.position, new Vector3(targetPos.x, player.transform.position.y, targetPos.z), player.GetSpeed() * Time.deltaTime);
+            targetPos = new Vector3(targetPos.x, player.transform.position.y, targetPos.z);
+            player.transform.position = Vector3.MoveTowards(player.transform.position, targetPos, player.GetSpeed() * Time.deltaTime);
+
+            if(Vector3.Distance(targetPos, player.transform.position) < 0.1f)
+            {
+                player.SetMove(false);
+            }
 
         }
     }

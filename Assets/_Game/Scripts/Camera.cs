@@ -11,19 +11,20 @@ public class CameraFollow : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        target = FindObjectOfType<Player>();
+        //target = FindObjectOfType<Player>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        Vector3 newPosition = new Vector3(target.transform.position.x + target.transform.forward.x * offset.z,
+        Vector3 newPosition = new Vector3(target.transform.position.x + offset.x,
                                           transform.position.y,
-                                          target.transform.position.z + target.transform.forward.z * offset.z);
+                                          target.transform.position.z + offset.z);
         transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime * speed);
         //transform.rotation = target.transform.rotation;
-        transform.rotation = Quaternion.Euler(new Vector3(defaultRotation.x,
+        /*transform.rotation = Quaternion.Euler(new Vector3(defaultRotation.x,
                                                           defaultRotation.y + target.GetDirection() * 90,
                                                           defaultRotation.z));
+        */
     }
 }
