@@ -134,19 +134,21 @@ public class Level : MonoBehaviour
 
     public void RemoveBrick(int posX, int posY)
     {
-        grid[posX, posY].GetComponent<Pivot>().Remove();
-        Destroy(grid[posX, posY]);
+        //grid[posX, posY].GetComponent<Pivot>().Remove();
+        Destroy(grid[posX, posY].gameObject);
         grid[posX, posY] = null;
 
+        bricksGrid[posX, posY] = (int)PIVOT.UNBRICK;
         CreatePivot(pivotPrefabs[(int)PIVOT.UNBRICK], posX, posY);
     }
 
     public void AddBrick(int posX, int posY)
     {
-        grid[posX, posY].GetComponent<Pivot>().Remove();
-        Destroy(grid[posX, posY]);
+        //grid[posX, posY].GetComponent<Pivot>().Remove();
+        Destroy(grid[posX, posY].gameObject);
         grid[posX, posY] = null;
 
+        bricksGrid[posX, posY] = (int)PIVOT.BRICK;
         CreatePivot(pivotPrefabs[(int)PIVOT.BRICK], posX, posY);
     }
 

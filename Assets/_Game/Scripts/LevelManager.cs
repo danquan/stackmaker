@@ -37,31 +37,43 @@ public class LevelManager : MonoBehaviour
         playerMapPosition = new Position(level.GetStart().x, level.GetStart().y);
     }
 
+    private int cnt = 0;
     // Update is called once per frame
     void Update()
     {
         // Move Player
         if(player.IsMoving())
         {
+            // Move in Map
             Position velocity;
             velocity.x = targetMapPos.x > playerMapPosition.x ? 1 : (targetMapPos.x < playerMapPosition.x ? -1 : 0);
             velocity.y = targetMapPos.y > playerMapPosition.y ? 1 : (targetMapPos.y < playerMapPosition.y ? -1 : 0);
-
-            Vector3 targetPos = level.GetPos(targetMapPos.x, targetMapPos.y);
-            player.transform.position = Vector3.MoveTowards(player.transform.position, new Vector3(targetPos.x, player.transform.position.y, targetPos.z), player.GetSpeed() * Time.deltaTime);
 
             // Change playerMapPos
             if(OnMapDistance(player.transform.position, level.GetPos(playerMapPosition.x + velocity.x, playerMapPosition.y + velocity.y)) < 0.1f)
             {
                 playerMapPosition.x += velocity.x;
                 playerMapPosition.y += velocity.y;
+
+                Debug.Log((++cnt) + " - " + playerMapPosition.x + " " + playerMapPosition.y + ": " + player.GetNumBricks());
                 
                 if(level.HasBrick(playerMapPosition.x, playerMapPosition.y))
                 {
+                    level.RemoveBrick(playerMapPosition.x, playerMapPosition.y);
                     player.AddBrick();
                 }
                 else
                 {
+                    // Stop Moving if run out of brick
+                    if(player.GetNumBricks() == 0)
+                    {
+                        playerMapPosition.x -= velocity.x;
+                        playerMapPosition.y -= velocity.y;
+                        player.SetMove(false);
+                        return;
+                    }
+
+                    level.AddBrick(playerMapPosition.x, playerMapPosition.y);
                     player.RemoveBrick();
                 }
 
@@ -71,6 +83,11 @@ public class LevelManager : MonoBehaviour
                     player.SetMove(false);
                 }
             }
+            
+            // Move in Plane
+            Vector3 targetPos = level.GetPos(targetMapPos.x, targetMapPos.y);
+            player.transform.position = Vector3.MoveTowards(player.transform.position, new Vector3(targetPos.x, player.transform.position.y, targetPos.z), player.GetSpeed() * Time.deltaTime);
+
         }
     }
 

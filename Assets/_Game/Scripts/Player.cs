@@ -1,15 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
     [SerializeField] private LevelManager levelManager;
+    [SerializeField] private GameObject body;
+    [SerializeField] private GameObject brickPrefab;
+    [SerializeField] private float brickHeight = 0.3f;
     [SerializeField] private int defaultBricks = 0;
     [SerializeField] private int speed = 350;
 
     // Number of Bricks that player has catched
-    private int nBricks;
+    List<GameObject> listBrick = new List<GameObject>();
 
     // Game Manager
     private Vector3 startSwipe,
@@ -38,7 +43,11 @@ public class Player : MonoBehaviour
 
     private void OnInit()
     {
-        nBricks = defaultBricks;
+        for(int i = 1; i <= defaultBricks; ++i)
+        {
+            AddBrick();
+        }
+
         isMoving = false;
     }
 
@@ -132,6 +141,7 @@ public class Player : MonoBehaviour
         transform.rotation = Quaternion.Euler(new Vector3(0, playerDirection * 90, 0));
     }
 
+    public int GetNumBricks() { return listBrick.Count; }
     public int GetDirection() { return playerDirection; }
     public bool IsMoving() { return isMoving; }
     public int GetSpeed() { return  speed; }
@@ -141,14 +151,23 @@ public class Player : MonoBehaviour
     }
     public void AddBrick()
     {
-        ++nBricks;
+        listBrick.Add(Instantiate(brickPrefab, 
+                                  new Vector3(0, listBrick.Count * brickHeight ,0) + transform.position, 
+                                  Quaternion.Euler(new Vector3(-90, playerDirection * 90, 180)), 
+                                  transform));
+        body.transform.position = (new Vector3(0, (listBrick.Count - 1) * brickHeight, 0)) + transform.position;
     }
     public void RemoveBrick()
     {
-        --nBricks;
+        Destroy(listBrick[listBrick.Count - 1]);
+        listBrick.RemoveAt(listBrick.Count - 1);
+        body.transform.position = (new Vector3(0, (listBrick.Count - 1) * brickHeight, 0)) + transform.position;
     }
     private void ClearBrick()
     {
-        nBricks = 0;
+        while(listBrick.Count > 0)
+        {
+            RemoveBrick();
+        }
     }
 }
