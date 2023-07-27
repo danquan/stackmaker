@@ -40,7 +40,38 @@ public class LevelManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        // Move Player
+        if(player.IsMoving())
+        {
+            Position velocity;
+            velocity.x = targetMapPos.x > playerMapPosition.x ? 1 : (targetMapPos.x < playerMapPosition.x ? -1 : 0);
+            velocity.y = targetMapPos.y > playerMapPosition.y ? 1 : (targetMapPos.y < playerMapPosition.y ? -1 : 0);
+
+            Vector3 targetPos = level.GetPos(targetMapPos.x, targetMapPos.y);
+            player.transform.position = Vector3.MoveTowards(player.transform.position, new Vector3(targetPos.x, player.transform.position.y, targetPos.z), player.GetSpeed() * Time.deltaTime);
+
+            // Change playerMapPos
+            if(OnMapDistance(player.transform.position, level.GetPos(playerMapPosition.x + velocity.x, playerMapPosition.y + velocity.y)) < 0.1f)
+            {
+                playerMapPosition.x += velocity.x;
+                playerMapPosition.y += velocity.y;
+                
+                if(level.HasBrick(playerMapPosition.x, playerMapPosition.y))
+                {
+                    player.AddBrick();
+                }
+                else
+                {
+                    player.RemoveBrick();
+                }
+
+                if(playerMapPosition.x == targetMapPos.x &&
+                   playerMapPosition.y == targetMapPos.y )
+                {
+                    player.SetMove(false);
+                }
+            }
+        }
     }
 
     // This function is to find Target position for MoveToward method
@@ -71,5 +102,11 @@ public class LevelManager : MonoBehaviour
             targetMapPos.x += velocity.x;
             targetMapPos.y += velocity.y;
         }
+    }
+
+    // Calculate Distance of 2 position on map
+    private double OnMapDistance(Vector3 a, Vector3 b)
+    {
+        return Mathf.Sqrt((a.x - b.x) * (a.x - b.x) + (a.z - b.z) * (a.z - b.z));
     }
 }

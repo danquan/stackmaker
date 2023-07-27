@@ -106,9 +106,13 @@ public class Level : MonoBehaviour
     {
         return x >= 0 && x < nRow && y >= 0 && y < nCol && bricksGrid[x, y] != (int)PIVOT.WALL;
     }
+    public bool HasBrick(int x, int y)
+    {
+        return x >= 0 && x < nRow && y >= 0 && y < nCol && bricksGrid[x, y] == (int)PIVOT.BRICK;
+    }
 
     // Get position of cell (posX, posY) in matrix 
-    private Vector3 GetPos(int posX, int posY)
+    public Vector3 GetPos(int posX, int posY)
     {
         // y in this scripts is z in gameSpace
         return new Vector3(posX, 0, posY) + upperLeft;

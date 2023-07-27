@@ -6,6 +6,7 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private LevelManager levelManager;
     [SerializeField] private int defaultBricks = 0;
+    [SerializeField] private int speed = 350;
 
     // Number of Bricks that player has catched
     private int nBricks;
@@ -131,13 +132,12 @@ public class Player : MonoBehaviour
         transform.rotation = Quaternion.Euler(new Vector3(0, playerDirection * 90, 0));
     }
 
+    public int GetDirection() { return playerDirection; }
+    public bool IsMoving() { return isMoving; }
+    public int GetSpeed() { return  speed; }
     public void SetMove(bool move)
     {
         this.isMoving = move;
-    }
-    public bool IsMoving()
-    {
-        return isMoving;
     }
     public void AddBrick()
     {
