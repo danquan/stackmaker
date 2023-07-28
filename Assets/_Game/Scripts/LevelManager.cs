@@ -59,6 +59,13 @@ public class LevelManager : MonoBehaviour
         listLevel[currentLevel].SetActive(true);
         OnInit();
     }
+    public void Retry()
+    {
+        listLevel[currentLevel].SetActive(false);
+        listLevel[currentLevel].GetComponent<Level>().OnInit();
+        listLevel[currentLevel].SetActive(true);
+        OnInit();
+    }
 
     private int cnt = 0;
     // Update is called once per frame
@@ -121,6 +128,7 @@ public class LevelManager : MonoBehaviour
         // Victory
         if(OnMapDistance(player.transform.position, level.GetFinishPos()) < 0.1f)
         {
+            player.ClearBrick();
             if(currentLevel == listLevel.Length - 1) 
             { 
                 gameManager.Victory();

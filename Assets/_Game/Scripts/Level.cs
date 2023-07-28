@@ -63,8 +63,10 @@ public class Level : MonoBehaviour
         }
     }
     // Prepare map
-    void OnInit()
+    public void OnInit()
     {
+        levelReset();
+
         string tilePath = @"Assets/_Game/Tile/" + levelMapFile;
         StreamReader reader = new StreamReader(tilePath);
 
@@ -120,6 +122,15 @@ public class Level : MonoBehaviour
                 {
                     CreateObject(pivotPrefabs[bricksGrid[idRow, idCol]], idRow, idCol);
                 }
+    }
+    public void levelReset()
+    {
+        foreach (Transform child in transform)
+        {
+            Destroy(child.gameObject);
+        }
+        grid = null;
+        bricksGrid = null;
     }
 
     public int GetNumRow() { return nRow;}

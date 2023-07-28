@@ -45,6 +45,13 @@ public class GameManager : MonoBehaviour
         levelManager.UpLevel();
     }
 
+    public void Retry()
+    {
+        levelManager.SetBlockGesture(false);
+        uiManager.SetWinOff();
+        levelManager.Retry();
+    }
+
     // Update is called once per frame
     void Update()
     {

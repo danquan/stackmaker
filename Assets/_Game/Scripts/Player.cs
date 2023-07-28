@@ -43,6 +43,8 @@ public class Player : MonoBehaviour
 
     private void OnInit()
     {
+        startSwipe = new Vector3(0, 0, -1);
+        endSwipe = new Vector3(0, 0, -1);
         for(int i = 1; i <= defaultBricks; ++i)
         {
             AddBrick();
@@ -176,7 +178,7 @@ public class Player : MonoBehaviour
         listBrick.RemoveAt(listBrick.Count - 1);
         body.transform.position = (new Vector3(0, (listBrick.Count - 1) * brickHeight, 0)) + transform.position;
     }
-    private void ClearBrick()
+    public void ClearBrick()
     {
         while(listBrick.Count > 0)
         {
