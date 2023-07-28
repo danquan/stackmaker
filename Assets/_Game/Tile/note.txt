@@ -2,6 +2,9 @@ Horizontal: z (positive: 0 -> nCol)
 Vertical: x (positive: 0-> nRow)
 
 Player's rotation (0, 0, 0) => player looks at positive way in z
+Camera's rotation = (25, -90, 0) => negative way in x
+winpos always = (0, -90, 0) => Positive way in x
+if finish pos in txt file is (x, y) => real position of finish box is (x, z)
 
 First line: Size of grid
 Second line: Start position

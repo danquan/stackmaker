@@ -54,6 +54,11 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(levelManager.IsBlockGesture())
+        {
+            return;
+        }
+
         // Don't process anything while moving
         if (IsMoving())
         {
@@ -108,8 +113,8 @@ public class Player : MonoBehaviour
             startSwipe = new Vector3(0, 0, -1);
 
             // Move
-            levelManager.FindAndSetTarget(this.playerDirection);
             SetMove(true);
+            levelManager.FindAndSetTarget(this.playerDirection);
         }
     }
 
