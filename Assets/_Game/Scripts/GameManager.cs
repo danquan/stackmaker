@@ -14,41 +14,67 @@ public class GameManager : MonoBehaviour
 
     void OnInit()
     {
-        levelManager.SetBlockGesture(true);
-        uiManager.SetMenuOn();
+        SetMenu();
+    }
+
+    public void SetMenu()
+    {
+        levelManager.PauseGame(true);
+        uiManager.SettingOff();
         uiManager.SetWinOff();
+        uiManager.SetPanelOff();
         uiManager.SetVictoryOff();
+        uiManager.SetMenuOn();
     }
 
     public void StartGame()
     {
-        levelManager.SetBlockGesture(false);
+        levelManager.ResetLevel();
+        levelManager.PauseGame(false);
         uiManager.SetMenuOff();
+        uiManager.SetPanelOn(); // Game Panel on
+    }
+
+
+    public void ContinueGame()
+    {
+        levelManager.PauseGame(false);
+        uiManager.SettingOff();
+        uiManager.SetPanelOn();
+    }
+    public void SettingGame()
+    {
+        levelManager.PauseGame(true);
+        uiManager.SetPanelOff();
+        uiManager.SettingOn();
     }
 
     public void Won()
     {
-        levelManager.SetBlockGesture(true);
+        levelManager.PauseGame(true);
         uiManager.SetWinOn();
+        uiManager.SetPanelOff();
     }
     public void Victory()
     {
-        levelManager.SetBlockGesture(true);
+        levelManager.PauseGame(true);
         uiManager.SetVictoryOn();
     }
 
-
     public void NextLevel()
     {
-        levelManager.SetBlockGesture(false);
+        levelManager.PauseGame(false);
         uiManager.SetWinOff();
+        uiManager.SetPanelOn();
         levelManager.UpLevel();
     }
 
     public void Retry()
     {
-        levelManager.SetBlockGesture(false);
+        levelManager.PauseGame(false);
         uiManager.SetWinOff();
+        uiManager.SettingOff();
+        uiManager.SetPanelOn();
         levelManager.Retry();
     }
 

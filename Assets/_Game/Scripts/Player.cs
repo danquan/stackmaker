@@ -41,10 +41,12 @@ public class Player : MonoBehaviour
         OnInit();
     }
 
-    private void OnInit()
+    public void OnInit()
     {
         startSwipe = new Vector3(0, 0, -1);
         endSwipe = new Vector3(0, 0, -1);
+        
+        ClearBrick();
         for(int i = 1; i <= defaultBricks; ++i)
         {
             AddBrick();
@@ -56,7 +58,7 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(levelManager.IsBlockGesture())
+        if(levelManager.IsPaused())
         {
             return;
         }

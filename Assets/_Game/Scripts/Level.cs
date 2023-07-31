@@ -20,7 +20,7 @@ public class Level : MonoBehaviour
         MAX_PIVOT = 8
     };
 
-    [SerializeField] private string levelMapFile;
+    [SerializeField] private TextAsset levelMapFile;
     [SerializeField] private GameObject[] pivotPrefabs = new GameObject[(int)PIVOT.MAX_PIVOT];
     [SerializeField] private GameObject brickPrefab;
     [SerializeField] private Vector3 defaultBrickPos;
@@ -46,42 +46,47 @@ public class Level : MonoBehaviour
         OnInit();
     }
 
+    private string ReadLine(ref string s)
+    {
+        return s;
+    }
+
     private void Resolve(string s, ref int x, ref int y)
     {
+        var tmp = s.Split(' ');
         x = y = 0;
-        for (int id = 0; id < s.Length; ++id)
-        {
-            if (s[id] == ' ' && y != 0)
-            {
-                x = y;
-                y = 0;
-            }
-            else if (s[id] != ' ')
-            {
-                y = y * 10 + Int32.Parse(s[id].ToString());
-            }
-        }
+        for (int id = 0; id < tmp[0].Length; ++id)
+            if (tmp[0][id] != '\n' && tmp[0][id] != ' ' && tmp[0][id] != '\r')
+                x = x * 10 + Int32.Parse(tmp[0][id].ToString());
+        for (int id = 0; id < tmp[1].Length; ++id)
+            if (tmp[1][id] != '\n' && tmp[1][id] != ' ' && tmp[1][id] != '\r')
+                y = y * 10 + Int32.Parse(tmp[1][id].ToString());
     }
     // Prepare map
     public void OnInit()
     {
         levelReset();
+        //Debug.Log("D" + levelMapFile.name);
+        //string tilePath = "Assets/_Game/Tile/" + levelMapFile.name+".txt";
 
-        string tilePath = @"Assets/_Game/Tile/" + levelMapFile;
-        StreamReader reader = new StreamReader(tilePath);
-
+        //StreamReader reader = new StreamReader(levelMapFile.name);
+        int cnt = 0;
+        var reader = levelMapFile.text.Split('\n');
         string line;
 
         // Read Size of Grid
-        line = reader.ReadLine();
+        line = ReadLine(ref reader[cnt]); // reader.ReadLine();
+        ++cnt;
         Resolve(line, ref nRow, ref nCol);
 
         // Read Start Position
-        line = reader.ReadLine();
+        line = ReadLine(ref reader[cnt]); // reader.ReadLine();
+        ++cnt;
         Resolve(line, ref startMapPos.x, ref startMapPos.y);
 
         // Read Finish Position
-        line = reader.ReadLine();
+        line = ReadLine(ref reader[cnt]); // reader.ReadLine();
+        ++cnt;
         Resolve(line, ref finishMapPos.x, ref finishMapPos.y);
 
         /*** Read Grid ***/
@@ -91,7 +96,8 @@ public class Level : MonoBehaviour
         // Then read matrix
         for(int idRow = 0; idRow < nRow; ++idRow)
         {
-            line = reader.ReadLine();
+            line = ReadLine(ref reader[cnt]); // reader.ReadLine();
+            ++cnt;
             for(int id = 0; id < nCol; ++id)
             {
                 bricksGrid[idRow, id] = Int32.Parse(line[id].ToString());
@@ -146,6 +152,10 @@ public class Level : MonoBehaviour
     {
         return x >= 0 && x < nRow && y >= 0 && y < nCol && bricksGrid[x, y] == (int)PIVOT.BRICK;
     }
+    public bool NeedBrick(int x, int y)
+    {
+        return x >= 0 && x < nRow && y >= 0 && y < nCol && bricksGrid[x, y] == (int)PIVOT.NEED_BRICK;
+    }
 
     // Get position of cell (posX, posY) in matrix 
     public Vector3 GetPos(int posX, int posY)
@@ -190,6 +200,7 @@ public class Level : MonoBehaviour
         CreateObject(pivotPrefabs[(int)PIVOT.UNBRICK], posX, posY);
     }
 
+    //int cnt = 0;
     public void AddBrick(int posX, int posY)
     {
         //grid[posX, posY].GetComponent<Pivot>().Remove();
@@ -197,6 +208,8 @@ public class Level : MonoBehaviour
         //grid[posX, posY] = null;
 
         //bricksGrid[posX, posY] = (int)PIVOT.BRICK;
+        bricksGrid[posX, posY] = (int)PIVOT.NEED_BRICK_TEMP;
+        //Debug.Log((cnt++) + " " + (bricksGrid[posX, posY] == (int)PIVOT.NEED_BRICK_TEMP) + " hehe");
         CreateObject(brickPrefab, posX, posY, Quaternion.identity, defaultBrickPos);
     }
 

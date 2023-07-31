@@ -10,7 +10,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField] GameObject[] listLevel;
     [SerializeField] private Player player;
 
-    private bool blockGesture = true;
+    private bool isPaused = true;
     private int currentLevel = 0;
     private Level level;
     
@@ -39,8 +39,12 @@ public class LevelManager : MonoBehaviour
         OnInit();
     }
 
-    void OnInit()
+    public void OnInit()
     {
+        // Clear Player
+        player.OnInit();
+
+        listLevel[currentLevel].GetComponent<Level>().OnInit();
         level = listLevel[currentLevel].GetComponent<Level>();
 
         /*** Make sure that player stand at starting box in new game ***/
@@ -56,21 +60,47 @@ public class LevelManager : MonoBehaviour
     {
         listLevel[currentLevel].SetActive(false);
         ++currentLevel;
-        listLevel[currentLevel].SetActive(true);
         OnInit();
+        listLevel[currentLevel].SetActive(true);
     }
     public void Retry()
     {
         listLevel[currentLevel].SetActive(false);
-        listLevel[currentLevel].GetComponent<Level>().OnInit();
-        listLevel[currentLevel].SetActive(true);
         OnInit();
+        listLevel[currentLevel].SetActive(true);
+    }
+    public void ResetLevel()
+    {
+        listLevel[currentLevel].SetActive(false);
+        currentLevel = 0;
+        OnInit();
+        listLevel[currentLevel].SetActive(true);
     }
 
-    private int cnt = 0;
+    // private int cnt = 0;
     // Update is called once per frame
     void FixedUpdate()
     {
+        // Pause Game
+        if(IsPaused())
+        {
+            return;
+        }
+
+
+        if(level.HasBrick(playerMapPosition.x, playerMapPosition.y))
+        {
+            level.RemoveBrick(playerMapPosition.x, playerMapPosition.y);
+            player.AddBrick();
+        }   
+        else if(level.NeedBrick(playerMapPosition.x, playerMapPosition.y))
+        {
+            level.AddBrick(playerMapPosition.x, playerMapPosition.y);
+            //Debug.Log((cnt++) + " - Current pos: " + playerMapPosition.x + " " + playerMapPosition.y + " " + level.NeedBrick(playerMapPosition.x, playerMapPosition.y));
+            player.RemoveBrick();
+        }
+        // Debug.Log(cnt + " - Current Bricks: " + player.GetNumBricks());
+
         // Move Player
         if(player.IsMoving())
         {
@@ -84,34 +114,6 @@ public class LevelManager : MonoBehaviour
             {
                 playerMapPosition.x += velocity.x;
                 playerMapPosition.y += velocity.y;
-
-                
-                if(level.HasBrick(playerMapPosition.x, playerMapPosition.y))
-                {
-                    level.RemoveBrick(playerMapPosition.x, playerMapPosition.y);
-                    player.AddBrick();
-                }   
-                else if(level.CanGo(playerMapPosition.x, playerMapPosition.y))
-                {
-                    // Stop Moving if run out of brick
-                    if(player.GetNumBricks() == 0)
-                    {
-                        playerMapPosition.x -= velocity.x;
-                        playerMapPosition.y -= velocity.y;
-                        player.SetMove(false);
-                        return;
-                    }
-
-                    level.AddBrick(playerMapPosition.x, playerMapPosition.y);
-                    player.RemoveBrick();
-                }
-                Debug.Log((++cnt) + " - " + playerMapPosition.x + " " + playerMapPosition.y + ": " + player.GetNumBricks());
-
-                /*if(playerMapPosition.x == targetMapPos.x &&
-                   playerMapPosition.y == targetMapPos.y )
-                {
-                    player.SetMove(false);
-                }*/
             }
             
             // Move in Plane
@@ -128,7 +130,7 @@ public class LevelManager : MonoBehaviour
         // Victory
         if(OnMapDistance(player.transform.position, level.GetFinishPos()) < 0.1f)
         {
-            player.ClearBrick();
+            //player.ClearBrick();
             if(currentLevel == listLevel.Length - 1) 
             { 
                 gameManager.Victory();
@@ -141,13 +143,13 @@ public class LevelManager : MonoBehaviour
     }
 
     // block gesture on UI screen
-    public bool IsBlockGesture()
+    public bool IsPaused()
     {
-        return blockGesture;
+        return isPaused;
     }
-    public void SetBlockGesture(bool blockGesture)
+    public void PauseGame(bool isPaused)
     {
-        this.blockGesture = blockGesture;
+        this.isPaused = isPaused;
     }
     // This function is to find Target position for MoveToward method
     public void FindAndSetTarget(int direction)

@@ -6,6 +6,8 @@ public class UIManager : MonoBehaviour
 {
     [SerializeField] private GameManager gameManager;
     [SerializeField] private GameObject gameMenu;
+    [SerializeField] private GameObject gamePanel;
+    [SerializeField] private GameObject gameSetting;
     [SerializeField] private GameObject Win;
     [SerializeField] private GameObject Victory;
 
@@ -32,6 +34,22 @@ public class UIManager : MonoBehaviour
     public void SetWinOff()
     {
         Win.SetActive(false);
+    }
+    public void SettingOn()
+    {
+        gameSetting.SetActive(true);
+    }
+    public void SettingOff()
+    {
+        gameSetting.SetActive(false);
+    }
+    public void SetPanelOn()
+    { 
+        gamePanel.SetActive(true); 
+    }
+    public void SetPanelOff()
+    {
+        gamePanel.SetActive(false);
     }
 
     // Update is called once per frame
