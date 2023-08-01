@@ -15,9 +15,10 @@ public class Level : MonoBehaviour
         NO_PIVOT = 3,
         NEED_BRICK = 4,
         NEED_BRICK_TEMP = 5,
+        FILLED_BRICK = 8,
         WIN_POS = 6,
         WIN_POS_TEMP = 7,
-        MAX_PIVOT = 8
+        MAX_PIVOT = 9
     };
 
     [SerializeField] private TextAsset levelMapFile;
@@ -145,8 +146,11 @@ public class Level : MonoBehaviour
     public Position GetFinish() { return finishMapPos; }
     public bool CanGo(int x, int y)
     {
-        return x >= 0 && x < nRow && y >= 0 && y < nCol && 
-                (bricksGrid[x, y] == (int)PIVOT.BRICK || bricksGrid[x, y] == (int)PIVOT.NEED_BRICK || bricksGrid[x,y] == (int)PIVOT.WIN_POS);
+        return x >= 0 && x < nRow && y >= 0 && y < nCol 
+            && bricksGrid[x, y] != (int)PIVOT.WALL
+            && bricksGrid[x, y] != (int)PIVOT.NO_PIVOT
+            && bricksGrid[x, y] != (int)PIVOT.NEED_BRICK_TEMP
+            && bricksGrid[x, y] != (int)PIVOT.WIN_POS_TEMP;
     }
     public bool HasBrick(int x, int y)
     {
@@ -208,7 +212,7 @@ public class Level : MonoBehaviour
         //grid[posX, posY] = null;
 
         //bricksGrid[posX, posY] = (int)PIVOT.BRICK;
-        bricksGrid[posX, posY] = (int)PIVOT.NEED_BRICK_TEMP;
+        bricksGrid[posX, posY] = (int)PIVOT.FILLED_BRICK;
         //Debug.Log((cnt++) + " " + (bricksGrid[posX, posY] == (int)PIVOT.NEED_BRICK_TEMP) + " hehe");
         CreateObject(brickPrefab, posX, posY, Quaternion.identity, defaultBrickPos);
     }
